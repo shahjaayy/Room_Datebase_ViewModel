@@ -119,24 +119,12 @@
 
     <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show Data"
-        android:textSize="10sp"
-        android:theme="@style/Theme.AppCompat"
-        android:onClick="showData"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/save_btn" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/save_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

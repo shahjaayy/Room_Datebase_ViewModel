@@ -8,6 +8,8 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fascinate.roomdatabasepractice.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
@@ -15,12 +17,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
-
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var database: UsersDatabase
-    private lateinit var list: List<UsersEntity>
+    private lateinit var viewModel: ViewModelMainActivity
     private lateinit var myAdapter: UsersAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,11 +29,17 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        database = UsersDatabase.getDatabase(applicationContext)
-
         binding.rcv.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(applicationContext)
+            myAdapter = UsersAdapter()
+            binding.rcv.adapter = myAdapter
+        }
+
+        viewModel = ViewModelProvider(this).get(ViewModelMainActivity::class.java)
+        viewModel.getAllUsersObservers().observe(this) {
+            myAdapter.setData(ArrayList(it))
+            myAdapter.notifyDataSetChanged()
         }
 
 
@@ -41,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     fun save(view: View) {
         //We can use IO Dispatcher for write and while reading we can use withContext(Dispatcher.Main)
         GlobalScope.launch(Dispatchers.IO) {
-            val check = database.userDao().insertUser(
+            val check = viewModel.insertUser(
                 UsersEntity(
                     0,
                     binding.edtFirstName.text.toString(),
@@ -52,7 +59,6 @@ class MainActivity : AppCompatActivity() {
             )
 
             Handler(Looper.getMainLooper()).post {
-                Log.e("checked", "$check")
                 if(check > 0)
                 {
                     Toast.makeText(applicationContext, "Data inserted...", Toast.LENGTH_SHORT).show()
@@ -68,6 +74,8 @@ class MainActivity : AppCompatActivity() {
 
 
         }
+
+
     }
 
     //fun update(view: View) {}
@@ -91,21 +99,5 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun showData(view: View) {
-        //As it is the live data so it automatically runs on Background thread so we don't need coroutines
-        //But i changed it as simple list so must use new thread
 
-        GlobalScope.launch {
-            //TODO("Background processing...")
-            list = database.userDao().getAllUsers()
-            withContext(Dispatchers.Main) {
-                // TODO("Update UI here!")
-
-                myAdapter = UsersAdapter(list)
-                binding.rcv.adapter = myAdapter
-            }
-        }
-
-
-    }
 }

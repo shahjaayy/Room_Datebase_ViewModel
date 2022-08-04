@@ -9,7 +9,7 @@ interface UsersDao {
 
     //Use suspend method as we can call them or override them inside the COROUTINE, so it runs on Background thread
     @Insert
-    suspend fun insertUser(usersEntity: UsersEntity): Long
+    fun insertUser(usersEntity: UsersEntity): Long
 
     @Update
     suspend fun updateUser(usersEntity: UsersEntity)

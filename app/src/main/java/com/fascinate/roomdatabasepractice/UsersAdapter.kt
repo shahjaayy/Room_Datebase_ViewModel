@@ -1,17 +1,19 @@
 package com.fascinate.roomdatabasepractice
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 
-class UsersAdapter(
-    private var list: List<UsersEntity>
-    ): RecyclerView.Adapter<UsersAdapter.UsersViewHolder>() {
+class UsersAdapter: RecyclerView.Adapter<UsersAdapter.UsersViewHolder>() {
+
+    private var list = ArrayList<UsersEntity>()
+
+    fun setData(list: ArrayList<UsersEntity>)
+    {
+        this.list = list
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsersViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.row_user_data, parent, false)
@@ -19,7 +21,7 @@ class UsersAdapter(
     }
 
     override fun onBindViewHolder(holder: UsersViewHolder, position: Int) {
-        list.let { holder.setDate(it) }
+        holder.bind(list[position])
     }
 
     override fun getItemCount(): Int {
@@ -40,9 +42,9 @@ class UsersAdapter(
             tvEmail = view.findViewById(R.id.row_email)
         }
 
-        fun setDate(list: List<UsersEntity>)
+        fun bind(entity: UsersEntity)
         {
-            list[position].let {
+            entity.let {
                 tvID.text = it.uId.toString()
                 tvName.text = "${it.firstName} ${it.lastName}"
                 tvEmail.text = it.email

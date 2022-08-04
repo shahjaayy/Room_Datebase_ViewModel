@@ -13,4 +13,19 @@ class ViewModelMainActivity(app: Application): AndroidViewModel(app) {
         return allUsers
     }
 
+    fun insertUser(entity: UsersEntity): Long {
+        val database = UsersDatabase.getDatabase(getApplication()).userDao()
+        val check = database.insertUser(entity)
+        getAllUsers()
+
+        return check
+    }
+
+    private fun getAllUsers(){
+        val database = UsersDatabase.getDatabase(getApplication()).userDao()
+        val list = database.getAllUsers()
+
+        allUsers.postValue(list)
+    }
+
 }
